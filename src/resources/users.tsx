@@ -617,6 +617,8 @@ export const UserEdit = (props: EditProps) => {
           </ReferenceField>
         </FormTab>
 
+        {/* Ẩn tab PHƯƠNG TIỆN */}
+        {/**
         <FormTab
           label={translate("resources.users_media.name", { smart_count: 2 })}
           icon={<PermMediaIcon />}
@@ -647,7 +649,9 @@ export const UserEdit = (props: EditProps) => {
             </Datagrid>
           </ReferenceManyField>
         </FormTab>
-
+        */}
+        {/* Ẩn tab PHÒNG */}
+        {/**
         <FormTab label={translate("resources.rooms.name", { smart_count: 2 })} icon={<ViewListIcon />} path="rooms">
           <ReferenceManyField
             reference="joined_rooms"
@@ -670,10 +674,7 @@ export const UserEdit = (props: EditProps) => {
               >
                 <TextField
                   source="name"
-                  sx={{
-                    wordBreak: "break-word",
-                    overflowWrap: "break-word",
-                  }}
+                  sx={{ wordBreak: "break-word", overflowWrap: "break-word" }}
                 />
               </ReferenceField>
               <ReferenceField
@@ -691,6 +692,7 @@ export const UserEdit = (props: EditProps) => {
             </Datagrid>
           </ReferenceManyField>
         </FormTab>
+        */}
 
         <FormTab
           label={translate("resources.pushers.name", { smart_count: 2 })}

@@ -86,8 +86,6 @@ export const App = () => (
         <Route path="/billing" element={<BillingPage />} />
       </CustomRoutes>
       <Resource {...users} />
-      <Resource {...rooms} />
-      <Resource {...userMediaStats} />
       <Resource {...reports} />
       <Resource {...roomDirectory} />
       <Resource {...destinations} />
