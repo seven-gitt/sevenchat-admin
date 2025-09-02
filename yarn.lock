@@ -423,10 +423,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bicstone/ra-language-japanese@^5.10.0":
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/@bicstone/ra-language-japanese/-/ra-language-japanese-5.10.0.tgz#811b23bb3df3780f6981edf32c5fa1a278fe00f7"
-  integrity sha512-jFVwe+5wsRkvjwXXA28miWUDVRmm2ux8EzlAh1X2QuK+vW3LcSvcL3Fndd5c2jfbsPdDck5Og8DGFfydLlcalQ==
+"@bicstone/ra-language-japanese@^5.11.0":
+  version "5.11.0"
+  resolved "https://registry.yarnpkg.com/@bicstone/ra-language-japanese/-/ra-language-japanese-5.11.0.tgz#05ad771e19022ef0e56367a3cbdb236eed9f708c"
+  integrity sha512-r0YNP7tV1ewLftn0Etw9QkLEgjE5mxqJJmHzGVaykR9M0G3xW4ljmSyngbbpTl5UDLDB4uovrefZg7CTsHVQYg==
   dependencies:
     ra-core "^5.0.0"
 
