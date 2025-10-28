@@ -348,7 +348,10 @@ const LoginPage = () => {
             {loading ? (
               <CircularProgress size={25} thickness={2} />
             ) : (
-              <Avatar sx={{ width: "120px", height: "120px" }} src="./images/logo.webp" />
+              <Avatar
+                sx={{ width: "120px", height: "120px" }}
+                src={`${import.meta.env.BASE_URL}images/logo.webp`}
+              />
             )}
           </Box>
           <Box className="hint">{translate("synapseadmin.auth.welcome")}</Box>

@@ -30,7 +30,7 @@ export default defineConfig({
               type: "image/x-icon",
             },
             {
-              src: "images/logo.png",
+              src: "images/logo.webp",
               sizes: "512x512",
               type: "image/webp",
               purpose: "any maskable",
