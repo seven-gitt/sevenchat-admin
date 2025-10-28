@@ -361,6 +361,11 @@ export interface SynapseDataProvider extends DataProvider {
     id: Identifier,
     suspendValue: boolean
   ) => Promise<{ success: boolean; error?: string; errcode?: string }>;
+  lockUsers: (
+    ids: Identifier[],
+    locked: boolean,
+    logoutDevices?: boolean
+  ) => Promise<{ success: boolean; failed: { id: Identifier; error?: string; errcode?: string }[] }>;
   eraseUser: (id: Identifier) => Promise<{ success: boolean; error?: string; errcode?: string }>;
   getServerRunningProcess: (etkeAdminUrl: string) => Promise<ServerProcessResponse>;
   getServerStatus: (etkeAdminUrl: string) => Promise<ServerStatusResponse>;
@@ -1058,6 +1063,65 @@ const baseDataProvider: SynapseDataProvider = {
       }
       throw error;
     }
+  },
+  lockUsers: async (ids: Identifier[], locked: boolean, logoutDevices = false) => {
+    const base_url = localStorage.getItem("base_url");
+    if (!base_url) throw Error("base_url not set");
+
+    const failed: { id: Identifier; error?: string; errcode?: string }[] = [];
+
+    await Promise.all(
+      ids.map(async id => {
+        const mxid = returnMXID(id);
+        const userUrl = `${base_url}/_synapse/admin/v2/users/${encodeURIComponent(mxid)}`;
+        try {
+          await jsonClient(userUrl, {
+            method: "PUT",
+            body: JSON.stringify({ locked: locked }, filterNullValues),
+          });
+        } catch (error) {
+          if (error instanceof HttpError) {
+            const errorBody = error.body as MatrixError | undefined;
+            failed.push({
+              id,
+              error: errorBody?.error ?? error.message,
+              errcode: errorBody?.errcode,
+            });
+            return;
+          }
+          throw error;
+        }
+
+        if (locked && logoutDevices) {
+          try {
+            const devicesUrl = `${userUrl}/devices`;
+            const { json } = await jsonClient(devicesUrl);
+            const deviceIds =
+              (json.devices as Device[] | undefined)?.map(device => device.device_id).filter(Boolean) ?? [];
+
+            if (deviceIds.length > 0) {
+              await jsonClient(`${userUrl}/delete_devices`, {
+                method: "POST",
+                body: JSON.stringify({ devices: deviceIds }),
+              });
+            }
+          } catch (error) {
+            if (error instanceof HttpError) {
+              const errorBody = error.body as MatrixError | undefined;
+              failed.push({
+                id,
+                error: errorBody?.error ? `Device logout failed: ${errorBody.error}` : `Device logout failed: ${error.message}`,
+                errcode: errorBody?.errcode,
+              });
+              return;
+            }
+            throw error;
+          }
+        }
+      })
+    );
+
+    return { success: failed.length === 0, failed };
   },
   eraseUser: async (id: Identifier) => {
     const base_url = localStorage.getItem("base_url");

@@ -5,13 +5,15 @@ import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import UserIcon from "@mui/icons-material/Group";
 import LockClockIcon from "@mui/icons-material/LockClock";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import ScienceIcon from "@mui/icons-material/Science";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import ViewListIcon from "@mui/icons-material/ViewList";
-import { Alert, Typography } from "@mui/material";
+import { Alert, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import {
@@ -66,6 +68,7 @@ import {
   Confirm,
   useCreate,
   useRedirect,
+  useUnselectAll,
 } from "react-admin";
 import { useFormContext } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -79,7 +82,7 @@ import { ServerNoticeButton, ServerNoticeBulkButton } from "../components/Server
 import UserAccountData from "../components/UserAccountData";
 import UserRateLimits from "../components/UserRateLimits";
 import { MediaIDField, ProtectMediaButton, QuarantineMediaButton } from "../components/media";
-import { User, UsernameAvailabilityResult } from "../synapse/dataProvider";
+import { SynapseDataProvider, User, UsernameAvailabilityResult } from "../synapse/dataProvider";
 import { DATE_FORMAT } from "../utils/date";
 import decodeURLComponent from "../utils/decodeURLComponent";
 import { isASManaged } from "../utils/mxid";
@@ -142,6 +145,124 @@ const UserPreventSelfDelete: React.FC<{
   return <div onClickCapture={handleDeleteClick}>{props.children}</div>;
 };
 
+const UserBulkLockButton: React.FC<{
+  targetLocked: boolean;
+  ownUserIsSelected: boolean;
+  asManagedUserIsSelected: boolean;
+}> = ({ targetLocked, ownUserIsSelected, asManagedUserIsSelected }) => {
+  const { selectedIds = [], refetch } = useListContext();
+  const translate = useTranslate();
+  const notify = useNotify();
+  const dataProvider = useDataProvider<SynapseDataProvider>();
+  const unselectAll = useUnselectAll("users");
+  const [open, setOpen] = useState(false);
+  const [isLocking, setIsLocking] = useState(false);
+
+  const disabledReason = ownUserIsSelected
+    ? translate("resources.users.helper.lock_self_error")
+    : asManagedUserIsSelected
+    ? translate("resources.users.helper.modify_managed_user_error")
+    : undefined;
+
+  const hasSelection = selectedIds.length > 0;
+  const isDisabled = isLocking || !hasSelection || !!disabledReason;
+  const labelKey = targetLocked ? "resources.users.action.lock_selected" : "resources.users.action.unlock_selected";
+  const titleKey = targetLocked
+    ? "resources.users.action.lock_selected_title"
+    : "resources.users.action.unlock_selected_title";
+  const contentKey = targetLocked
+    ? "resources.users.action.lock_selected_content"
+    : "resources.users.action.unlock_selected_content";
+  const successKey = targetLocked
+    ? "resources.users.action.lock_selected_success"
+    : "resources.users.action.unlock_selected_success";
+  const failureKey = targetLocked
+    ? "resources.users.action.lock_selected_failure"
+    : "resources.users.action.unlock_selected_failure";
+  const partialFailureKey = targetLocked
+    ? "resources.users.action.lock_selected_partial_failure"
+    : "resources.users.action.unlock_selected_partial_failure";
+
+  const handleDialogOpen = () => {
+    if (isDisabled) {
+      return;
+    }
+    setOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    if (isLocking) {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleLockUsers = async () => {
+    if (isLocking) {
+      return;
+    }
+    setIsLocking(true);
+    try {
+      const result = await dataProvider.lockUsers(selectedIds, targetLocked, targetLocked);
+      const failedCount = result.failed.length;
+
+      if (failedCount === 0) {
+        notify(successKey, {
+          type: "info",
+          messageArgs: { smart_count: selectedIds.length },
+        });
+        unselectAll();
+      } else if (failedCount === selectedIds.length) {
+        notify(failureKey, {
+          type: "error",
+          messageArgs: { ids: result.failed.map(failure => String(failure.id)).join(", ") },
+        });
+      } else {
+        notify(partialFailureKey, {
+          type: "warning",
+          messageArgs: {
+            smart_count: failedCount,
+            ids: result.failed.map(failure => String(failure.id)).join(", "),
+          },
+        });
+      }
+
+      refetch?.();
+    } catch (error) {
+      console.error("Error locking users", error);
+      notify(failureKey, { type: "error" });
+    } finally {
+      setIsLocking(false);
+      setOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <Tooltip title={disabledReason ?? ""} disableHoverListener={!disabledReason}>
+        <span>
+          <Button
+            label={labelKey}
+            onClick={handleDialogOpen}
+            disabled={isDisabled}
+            startIcon={targetLocked ? <LockIcon /> : <LockOpenIcon />}
+            size="small"
+          />
+        </span>
+      </Tooltip>
+      <Confirm
+        isOpen={open}
+        title={translate(titleKey, { smart_count: selectedIds.length })}
+        content={translate(contentKey, { smart_count: selectedIds.length })}
+        onConfirm={handleLockUsers}
+        onClose={handleDialogClose}
+        confirm="ra.action.confirm"
+        cancel="ra.action.cancel"
+      />
+    </>
+  );
+};
+
 const UserBulkActionButtons = () => {
   const record = useListContext();
   const [ownUserIsSelected, setOwnUserIsSelected] = useState(false);
@@ -157,6 +278,16 @@ const UserBulkActionButtons = () => {
   return (
     <>
       <ServerNoticeBulkButton />
+      <UserBulkLockButton
+        targetLocked={true}
+        ownUserIsSelected={ownUserIsSelected}
+        asManagedUserIsSelected={asManagedUserIsSelected}
+      />
+      <UserBulkLockButton
+        targetLocked={false}
+        ownUserIsSelected={ownUserIsSelected}
+        asManagedUserIsSelected={asManagedUserIsSelected}
+      />
       <UserPreventSelfDelete ownUserIsSelected={ownUserIsSelected} asManagedUserIsSelected={asManagedUserIsSelected}>
         <DeleteUserButton
           selectedIds={selectedIds}

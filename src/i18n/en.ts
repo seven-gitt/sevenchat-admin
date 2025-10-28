@@ -191,6 +191,7 @@ const en: SynapseTranslationMessages = {
         erase_text:
           "This means messages sent by the user(-s) will still be visible by anyone who was in the room when these messages were sent, but hidden from users joining the room afterward.",
         erase_admin_error: "Deleting own user is not allowed.",
+        lock_self_error: "Locking your own account is not allowed.",
         modify_managed_user_error: "Modifying a system-managed user is not allowed.",
         username_available: "Username is available",
       },
@@ -204,6 +205,22 @@ const en: SynapseTranslationMessages = {
         overwrite_content: "This username is already taken. Are you sure that you want to overwrite the existing user?",
         overwrite_cancel: "Cancel",
         overwrite_confirm: "Overwrite",
+        lock_selected: "Lock selected",
+        lock_selected_title: "Lock the selected account? |||| Lock the %{smart_count} selected accounts?",
+        lock_selected_content:
+          "Are you sure you want to lock the selected account and sign out all of its devices? |||| Are you sure you want to lock the %{smart_count} selected accounts and sign out all of their devices?",
+        lock_selected_success: "Locked %{smart_count} account. |||| Locked %{smart_count} accounts.",
+        lock_selected_failure: "Failed to lock the selected accounts: %{ids}.",
+        lock_selected_partial_failure:
+          "Locked all but %{smart_count} account: %{ids}. |||| Locked all but %{smart_count} accounts: %{ids}.",
+        unlock_selected: "Unlock selected",
+        unlock_selected_title: "Unlock the selected account? |||| Unlock the %{smart_count} selected accounts?",
+        unlock_selected_content:
+          "Are you sure you want to unlock the selected account? |||| Are you sure you want to unlock the %{smart_count} selected accounts?",
+        unlock_selected_success: "Unlocked %{smart_count} account. |||| Unlocked %{smart_count} accounts.",
+        unlock_selected_failure: "Failed to unlock the selected accounts: %{ids}.",
+        unlock_selected_partial_failure:
+          "Unlocked all but %{smart_count} account: %{ids}. |||| Unlocked all but %{smart_count} accounts: %{ids}.",
       },
       badge: {
         you: "You",

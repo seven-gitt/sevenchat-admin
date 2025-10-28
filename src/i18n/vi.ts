@@ -191,6 +191,7 @@ const vi: SynapseTranslationMessages = {
         erase_text:
           "Điều này có nghĩa là tin nhắn được gửi bởi người dùng sẽ vẫn hiển thị cho bất kỳ ai đã ở trong phòng khi những tin nhắn này được gửi, nhưng ẩn khỏi người dùng tham gia phòng sau đó.",
         erase_admin_error: "Không được phép xóa người dùng của chính mình.",
+        lock_self_error: "Không thể tự khóa tài khoản của bạn.",
         modify_managed_user_error: "Không được phép sửa đổi người dùng được quản lý bởi hệ thống.",
         username_available: "Tên người dùng có sẵn",
       },
@@ -204,6 +205,19 @@ const vi: SynapseTranslationMessages = {
         overwrite_content: "Tên người dùng này đã được sử dụng. Bạn có chắc chắn muốn ghi đè người dùng hiện có?",
         overwrite_cancel: "Hủy",
         overwrite_confirm: "Ghi đè",
+        lock_selected: "Khóa người dùng đã chọn",
+        lock_selected_title: "Khóa tài khoản đã chọn? |||| Khóa %{smart_count} tài khoản đã chọn?",
+        lock_selected_content:
+          "Bạn có chắc chắn muốn khóa tài khoản này và đăng xuất khỏi tất cả thiết bị? |||| Bạn có chắc chắn muốn khóa %{smart_count} tài khoản đã chọn và đăng xuất khỏi tất cả thiết bị?",
+        lock_selected_success: "Đã khóa %{smart_count} tài khoản. |||| Đã khóa %{smart_count} tài khoản.",
+        lock_selected_failure: "Không thể khóa các tài khoản đã chọn: %{ids}.",
+        lock_selected_partial_failure: "Một số tài khoản không khóa được (%{smart_count}): %{ids}.",
+        unlock_selected: "Mở khóa người dùng đã chọn",
+        unlock_selected_title: "Mở khóa tài khoản đã chọn? |||| Mở khóa %{smart_count} tài khoản đã chọn?",
+        unlock_selected_content: "Bạn có chắc chắn muốn mở khóa tài khoản này? |||| Bạn có chắc chắn muốn mở khóa %{smart_count} tài khoản đã chọn?",
+        unlock_selected_success: "Đã mở khóa %{smart_count} tài khoản. |||| Đã mở khóa %{smart_count} tài khoản.",
+        unlock_selected_failure: "Không thể mở khóa các tài khoản đã chọn: %{ids}.",
+        unlock_selected_partial_failure: "Một số tài khoản không mở khóa được (%{smart_count}): %{ids}.",
       },
       badge: {
         you: "Bạn",

@@ -170,6 +170,7 @@ interface SynapseTranslationMessages extends TranslationMessages {
         erase: string;
         erase_text: string;
         erase_admin_error: string;
+        lock_self_error?: string;
         modify_managed_user_error: string;
         username_available: string;
       };
@@ -183,6 +184,18 @@ interface SynapseTranslationMessages extends TranslationMessages {
         overwrite_content: string;
         overwrite_cancel: string;
         overwrite_confirm: string;
+        lock_selected?: string;
+        lock_selected_title?: string;
+        lock_selected_content?: string;
+        lock_selected_success?: string;
+        lock_selected_failure?: string;
+        lock_selected_partial_failure?: string;
+        unlock_selected?: string;
+        unlock_selected_title?: string;
+        unlock_selected_content?: string;
+        unlock_selected_success?: string;
+        unlock_selected_failure?: string;
+        unlock_selected_partial_failure?: string;
       };
       badge: {
         you: string;
